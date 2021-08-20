@@ -1,23 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
+import React,{useEffect,useState} from 'react'
+import Userauth from './components/Userauth';
+import {auth} from './components/Firebase';
+import Homepage from './components/Homepage';
 
-function App() {
+const  App=()=>{
+  const [presentuser, setpresentuser] = useState(null);
+  useEffect(() => {
+    auth.onAuthStateChanged(user=>{
+      if(user){
+      setpresentuser({
+        uid:user?.uid,
+        email:user?.email,
+      })
+      }
+      else{
+        setpresentuser(null);
+      }
+    })
+  },[])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {presentuser ? <Homepage/> : <Userauth/>}
+     
     </div>
   );
 }
